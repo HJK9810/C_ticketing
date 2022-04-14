@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <time.h> // 오늘날짜 구하는 헤더
+const int MIN_BABY = 1, MIN_CHILD = 3, MIN_TEEN = 13, MIN_ADULT = 19, MAX_CHILD = 12, MAX_TEEN = 18, MAX_ADULT = 64;
 
 void printError() { // error출력 
 	printf("잘못된값이 입력됬습니다. 다시 입력하세요.\n");
@@ -86,11 +87,11 @@ int ticketCal(int typeAll, int typeDay, int *age, int type, int count, int *sale
 	else if(typeAll == 2) idx = typeDay + 1;
 	
 	*age = yearCal(residentNum); // 만나이 계산
-	if(age < 3 && age > 1) price = BABY;
-	else if(age > 64) price = CHILD[idx]; // 65세 이상 = 어린이요금 
-	else if(age > 19) price = ADULT[idx];
-	else if(age < 19 && age > 12) price = TEEN[idx];
-	else if(age < 13 && age > 3) price = CHILD[idx];
+	if(age < MIN_CHILD  && age > MIN_BABY) price = BABY;
+	else if(age > MAX_TEEN) price = CHILD[idx]; // 65세 이상 = 어린이요금 
+	else if(age > MIN_ADULT) price = ADULT[idx];
+	else if(age < MIN_ADULT && age > MAX_CHILD) price = TEEN[idx];
+	else if(age < MIN_TEEN && age >= MIN_CHILD) price = CHILD[idx];
 
 	price *= percent[type]; // 각 할인이 적용된 가격
 	*saleprice = (price / 100) * 100; // 롯데월드 할인가는 100의 자리에서 버림한 값
@@ -143,13 +144,13 @@ void printTickets(int sum, int *position, int(*orderlist)[6]) { // 그동안 발권한
 		if(typeDay == 1) printf("%6s ", "종일권");
 		else if(typeDay == 2) printf("%6s ", "오후권");
 		
-		if(age > 64){
+		if(age > MAX_ADULT){
 			printf("%6s ", "노인");
-		} else if(age > 19) { // 어른 
+		} else if(age > MAX_TEEN) { // 어른 
 			printf("%6s ", "어른");
-		} else if(age < 19 && age > 12) { // 청소년
+		} else if(age < MIN_ADULT && age > MAX_CHILD) { // 청소년
 			printf("%6s ", "청소년"); 
-		} else if(age < 13 && age > 3) { // 어린이 
+		} else if(age < MIN_TEEN && age >= MIN_CHILD) { // 어린이 
 			printf("%6s ", "어린이");
 		} else printf("%6s ", "베이비");
 		
