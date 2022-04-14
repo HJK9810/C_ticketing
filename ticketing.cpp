@@ -116,6 +116,16 @@ void saveOrder(int ticketAll, int ticketDay, int age, int count, int price, int 
 	(*position)++;
 }
 // print
+int printRepeat(int sum) { // 발권 지속 여부 
+	printf("가격은 %d 원 입니다. \n", sum);
+	printf("감사합니다.\n\n"); 
+			
+	printf("계속 발권 하시겠습니까?\n");
+	printf("1. 티켓 발권\n2.종료\n");
+	
+	return inputTxt(2);
+}
+
 void printTickets(int sum, int *position, int(*orderlist)[6]) { // 그동안 발권한 부분 출력 
 	printf("티켓 발권을 종료합니다. 감사합니다.\n\n");
 	printf("===========================롯데월드===========================\n");
@@ -181,14 +191,9 @@ int main() {
 			
 			// 계산 
 			int sum = ticketCal(typeAll, typeDay, &age, forsales, count, &saleprice); // 동일권 가격합
-			totalSum += sum;
 			saveOrder(typeAll, typeDay, age, count, saleprice, forsales, &position, orderList);
-			printf("가격은 %d 원 입니다. \n", sum);
-			printf("감사합니다.\n\n"); 
-			
-			printf("계속 발권 하시겠습니까?\n");
-			printf("1. 티켓 발권\n2.종료\n");
-			int check = inputTxt(2);
+			totalSum += sum;
+			int check = printRepeat(sum);
 			if(check == 2) break;
 		}
 		printTickets(totalSum, &position, orderList);
