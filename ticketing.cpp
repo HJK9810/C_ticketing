@@ -45,10 +45,13 @@ void inputData(int *typeAll, int *typeDay, int *residentNum, int *count, int *fo
 	printf("1. 없음 ( 나이 우대는 자동처리)\n");
 	printf("2. 장애인\n");
 	printf("3. 국가유공자\n");
-	printf("4. 휴가장병\n");
-	printf("5. 임산부\n");
-	printf("6. 다둥이행복카드\n");
-	*forsales = inputTxt(6);
+	if(*typeAll == 1) {
+		printf("4. 휴가장병\n");
+		printf("5. 임산부\n");
+		printf("6. 다둥이행복카드\n");
+		*forsales = inputTxt(6);	
+	} else *forsales = inputTxt(3);
+	
 }
 
 // 계산파트 
