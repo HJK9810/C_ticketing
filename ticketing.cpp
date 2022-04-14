@@ -73,7 +73,8 @@ int yearCal(int yourAge) { // 주민번호에 따른 나이구하기
 	return age;
 }
 
-int ticketCal(int typeAll, int typeDay, int age) { // 종합or파크, 종일or오후, 나이
+int ticketCal(int typeAll, int typeDay, int *age, int type, int count, int *saleprice) { // 종합or파크, 종일or오후, 나이
+	const float percent[7] = {0, 1, 0.5, 0.5, 0.51, 0.5, 0.7}; // 각각의 할인률 
 	const int ADULT[4] = {62000, 50000, 59000, 47000}; // 종합-종일, 종합-오후, 파크-종일, 파크-오후 
 	const int TEEN[4] = {54000, 43000, 52000, 41000};
 	const int CHILD[4] = {47000, 36000, 46000, 35000};
@@ -84,29 +85,21 @@ int ticketCal(int typeAll, int typeDay, int age) { // 종합or파크, 종일or오후, 나
 	if(typeAll == 1) idx = typeDay - 1;
 	else if(typeAll == 2) idx = typeDay + 1;
 	
+	*age = yearCal(residentNum); // 만나이 계산
 	if(age < 3 && age > 1) price = BABY;
 	else if(age > 64) price = CHILD[idx]; // 65세 이상 = 어린이요금 
 	else if(age > 19) price = ADULT[idx];
 	else if(age < 19 && age > 12) price = TEEN[idx];
 	else if(age < 13 && age > 3) price = CHILD[idx];
 
-	return price;
-}
-
-int saleCal(int price, int type) { // 우대할인 적용 가격 
-	const float percent[7] = {0, 1, 0.5, 0.5, 0.51, 0.5, 0.7}; // 각각의 할인률 
 	price *= percent[type]; // 각 할인이 적용된 가격
-	price = (price / 100) * 100; // 롯데월드 할인가는 100의 자리에서 버림한 값
+	*saleprice = (price / 100) * 100; // 롯데월드 할인가는 100의 자리에서 버림한 값
 	
-	return price;
-}
-
-int sumPrice(int price, int saleprice, int count, int forsales) { // 해당 티켓들 합 
 	int sum = 0;
-	if((forsales > 1 && forsales < 5) && count > 1) { // 임산부 & 다둥이는 본인만 그 외는 동반 1인 할인 
-		sum = saleprice * 2 + price * (count - 2);
-	} else if(forsales > 1) {
-		sum = saleprice + price * (count - 1);
+	if((type > 1 && type < 5) && count > 1) { // 임산부 & 다둥이는 본인만 그 외는 동반 1인 할인 
+		sum = *saleprice * 2 + price * (count - 2);
+	} else if(type > 1) {
+		sum = *saleprice + price * (count - 1);
 	} else sum = price * count;
 	
 	return sum;
@@ -180,18 +173,16 @@ int main() {
 			int typeDay = 0; // 종일 or 오후 
 			int residentNum = 0; // 주민번호 앞자리 
 			int count = 0; // 티켓수 
-			int forsales = 0; // 우대할인적용 
+			int forsales = 0; // 우대할인적용
+			int saleprice = 0; // 할인가 적용 티켓값 
+			int age = 0;
 			
 			inputData(&typeAll, &typeDay, &residentNum, &count, &forsales); // 데이터 입력
 			
 			// 계산 
-			int age = yearCal(residentNum); // 만나이 계산 
-			int price = ticketCal(typeAll, typeDay, age); // 권종등에 따른 티켓값
-			int saleprice = saleCal(price, forsales);
-			int sum = sumPrice(price, saleprice, count, forsales); // 동일권 가격합 
+			int sum = ticketCal(typeAll, typeDay, &age, forsales, count, &saleprice); // 동일권 가격합
 			totalSum += sum;
 			saveOrder(typeAll, typeDay, age, count, saleprice, forsales, &position, orderList);
-			printf("age : %d\n", age);
 			printf("가격은 %d 원 입니다. \n", sum);
 			printf("감사합니다.\n\n"); 
 			
