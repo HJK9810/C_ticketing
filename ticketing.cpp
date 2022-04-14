@@ -93,7 +93,7 @@ int ticketCal(int typeAll, int typeDay, int *age, int type, int count, int *sale
 	else if(age < MIN_ADULT && age > MAX_CHILD) price = TEEN[idx];
 	else if(age < MIN_TEEN && age >= MIN_CHILD) price = CHILD[idx];
 
-	if(typeAll == 1 || type > 2) {
+	if(typeAll == 1 || type > 2) { // 장애인, 국가유공자만 파크이용권또한 할인가능 
 		price *= percent[type]; // 각 할인이 적용된 가격
 		*saleprice = (price / 100) * 100; // 롯데월드 할인가는 100의 자리에서 버림한 값
 	}
