@@ -1,15 +1,16 @@
 #include <stdio.h>
 #include <time.h> // 오늘날짜 구하는 헤더
 
-void printError() {
+void printError() { // error출력 
 	printf("잘못된값이 입력됬습니다. 다시 입력하세요.\n");
 }
 
-int inputTxt(int max) {
+int inputTxt(int max) { // 입력 - max값보다 많거나 0일경우, 다시입력 
 	int input = 0;
 	do{
+		printf("입력하세요 : ");
 		scanf("%d", &input);
-	} while(input < 1 || input > n);
+	} while(input < 1 || input > max);
 	return input;
 }
 
@@ -37,11 +38,10 @@ int yearCal(int yourAge) { // 주민번호에 따른 나이구하기
 	return age;
 }
 
-int ticketCal(int typeAll, int typeDay, int age, int type) { // 종합or파크, 종일or오후, 나이, 우대할인
- 	const float percent[7] = {0, 1, 0.5, 0.5, 0.51, 0.5, 0.7}; // 각각의 할인률 
-	const int ADULT = {62000, 50000, 59000, 47000}; // 종합-종일, 종합-오후, 파크-종일, 파크-오후 
-	const int TEEN = {54000, 43000, 52000, 41000};
-	const int CHILD = {47000, 36000, 46000, 35000};
+int ticketCal(int typeAll, int typeDay, int age, int type) { // 종합or파크, 종일or오후, 나이
+	const int ADULT[4] = {62000, 50000, 59000, 47000}; // 종합-종일, 종합-오후, 파크-종일, 파크-오후 
+	const int TEEN[4] = {54000, 43000, 52000, 41000};
+	const int CHILD[4] = {47000, 36000, 46000, 35000};
 	const int BABY = 15000; 
 	int price = 0;
 	int idx = 0;
@@ -54,11 +54,27 @@ int ticketCal(int typeAll, int typeDay, int age, int type) { // 종합or파크, 종일
 	else if(age > 19) price = ADULT[idx];
 	else if(age < 18 && age > 12) price = TEEN[idx];
 	else if(age < 13 && age > 3) price = CHILD[idx];
-	
+
+	return price;
+}
+
+int saleCal(int price, int type) { // 우대할인 적용 가격 
+	const float percent[7] = {0, 1, 0.5, 0.5, 0.51, 0.5, 0.7}; // 각각의 할인률 
 	price *= percent[type]; // 각 할인이 적용된 가격
-	price = (price / 100) * 100; // 롯데월드 할인가는 100의 자리에서 버림한 값 
+	price = (price / 100) * 100; // 롯데월드 할인가는 100의 자리에서 버림한 값
 	
 	return price;
+}
+
+int sumPrice(int price, int saleprice, int count, int forsales) { // 해당 티켓들 합 
+	int sum = 0;
+	if((forsales > 1 && forsales < 5) && count > 1) { // 임산부 & 다둥이는 본인만 그 외는 동반 1인 할인 
+		sum = saleprice * 2 + price * (count - 2);
+	} else if(forsales > 1) {
+		sum = saleprice + price * (count - 1);
+	} else sum = price * count;
+	
+	return sum;
 }
 
 void saveOrder(int ticketAll, int ticketDay, int age, int count, int price, int sales, int *position, int (*orderlist)[6]) {
@@ -152,14 +168,9 @@ int main() {
 			
 			// 계산 
 			int age = yearCal(residentNum); // 만나이 계산 
-			int saleprice = ticketCal(typeAll, typeDay, age, forsales); // 권종등에 따른 티켓값
-			int sum = 0; // 동일권 가격합 
-			
-			if((forsales > 1 && forsales < 5) && count > 1) { // 임산부 & 다둥이는 본인만 그 외는 동반 1인 할인 
-				sum = saleprice * 2 + price * (count - 2);
-			} else if(forsales > 1) {
-				sum = saleprice + price * (count - 1);
-			} else sum = price * count;
+			int price = ticketCal(typeAll, typeDay, age); // 권종등에 따른 티켓값
+			int saleprice = saleCal(price, forsales);
+			int sum = sumPrice(price, saleprice, count, forsales); // 동일권 가격합 
 			totalSum += sum;
 			saveOrder(typeAll, typeDay, age, count, saleprice, forsales, &position, orderList);
 			
