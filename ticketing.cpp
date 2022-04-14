@@ -10,12 +10,12 @@ int inputTxt(int max) { // 입력 - max값보다 많거나 0일경우, 다시입력
 	int input = 0;
 	if(max < 20) {
 		do{
-			printf("입력하세요 : ");
+			printf("\t\t => ");
 			scanf("%d", &input);
 		} while(input < 1 || input > max);
 	} else {
 		while(true){
-			printf("입력하세요 : ");
+			printf("\t\t => ");
 			scanf("%d", &input);
 			int year = input / 10000;
 			int month = input % 10000 / 100;
@@ -28,27 +28,27 @@ int inputTxt(int max) { // 입력 - max값보다 많거나 0일경우, 다시입력
 }
 // 입력파트 
 void inputData(int *typeAll, int *typeDay, int *residentNum, int *count, int *forsales) {
-	printf("권종을 선택하세요.\n");
-	printf("1. 종합이용권\n2. 파크이용권\n");
+	printf("  권종을 선택하세요.\n");
+	printf("\t1. 종합이용권\n\t2. 파크이용권\n");
 	*typeAll = inputTxt(2);
 		
-	printf("권종을 선택하세요.\n");
-	printf("1. 종일권\n2. 오후권\n");
+	printf("  권종을 선택하세요.\n");
+	printf("\t1. 종일권\n\t2. 오후권\n");
 	*typeDay = inputTxt(2);
 		
-	printf("주민번호를 입력하세요.(6자리까지)\n");
+	printf("  주민번호를 입력하세요.(6자리까지)\n");
 	*residentNum = inputTxt(1000000);
-	printf("몇개를 주문하시겠습니까? (최대 10개)\n"); 
+	printf("  몇개를 주문하시겠습니까? (최대 10개)\n"); 
 	*count = inputTxt(10);
 		
-	printf("우대사항을 선택하세요.\n");
-	printf("1. 없음 ( 나이 우대는 자동처리)\n");
-	printf("2. 장애인\n");
-	printf("3. 국가유공자\n");
+	printf("  우대사항을 선택하세요.\n");
+	printf("\t1. 없음 ( 나이 우대는 자동처리)\n");
+	printf("\t2. 장애인\n");
+	printf("\t3. 국가유공자\n");
 	if(*typeAll == 1) {
-		printf("4. 휴가장병\n");
-		printf("5. 임산부\n");
-		printf("6. 다둥이행복카드\n");
+		printf("\t4. 휴가장병\n");
+		printf("\t5. 임산부\n");
+		printf("\t6. 다둥이행복카드\n");
 		*forsales = inputTxt(6);	
 	} else *forsales = inputTxt(3);
 	
@@ -77,7 +77,7 @@ int yearCal(int yourAge) { // 주민번호에 따른 나이구하기
 	return age;
 }
 
-int ticketCal(int typeAll, int typeDay, int *age, int type, int count, int *saleprice) { // 종합or파크, 종일or오후, 나이
+int ticketCal(int typeAll, int typeDay, int residentNum, int *age, int type, int count, int *saleprice) { // 종합or파크, 종일or오후, 나이
 	const float percent[7] = {0, 1, 0.5, 0.5, 0.51, 0.5, 0.7}; // 각각의 할인률 
 	const int ADULT[4] = {62000, 50000, 59000, 47000}; // 종합-종일, 종합-오후, 파크-종일, 파크-오후 
 	const int TEEN[4] = {54000, 43000, 52000, 41000};
@@ -90,11 +90,11 @@ int ticketCal(int typeAll, int typeDay, int *age, int type, int count, int *sale
 	else if(typeAll == 2) idx = typeDay + 1;
 	
 	*age = yearCal(residentNum); // 만나이 계산
-	if(age < MIN_CHILD  && age > MIN_BABY) price = BABY;
-	else if(age > MAX_TEEN) price = CHILD[idx]; // 65세 이상 = 어린이요금 
-	else if(age > MIN_ADULT) price = ADULT[idx];
-	else if(age < MIN_ADULT && age > MAX_CHILD) price = TEEN[idx];
-	else if(age < MIN_TEEN && age >= MIN_CHILD) price = CHILD[idx];
+	if(*age < MIN_CHILD  && *age > MIN_BABY) price = BABY;
+	else if(*age > MAX_TEEN) price = CHILD[idx]; // 65세 이상 = 어린이요금 
+	else if(*age > MIN_ADULT) price = ADULT[idx];
+	else if(*age < MIN_ADULT && *age > MAX_CHILD) price = TEEN[idx];
+	else if(*age < MIN_TEEN && *age >= MIN_CHILD) price = CHILD[idx];
 
 	if(typeAll == 1 || type > 2) { // 장애인, 국가유공자만 파크이용권또한 할인가능 
 		price *= percent[type]; // 각 할인이 적용된 가격
@@ -123,17 +123,17 @@ void saveOrder(int ticketAll, int ticketDay, int age, int count, int price, int 
 }
 // print
 int printRepeat(int sum) { // 발권 지속 여부 
-	printf("가격은 %d 원 입니다. \n", sum);
-	printf("감사합니다.\n\n"); 
+	printf("  가격은 %d 원 입니다. \n", sum);
+	printf("  감사합니다.\n\n"); 
 			
-	printf("계속 발권 하시겠습니까?\n");
-	printf("1. 티켓 발권\n2.종료\n");
+	printf("  계속 발권 하시겠습니까?\n");
+	printf("\t1. 티켓 발권\n\t2.종료\n");
 	
 	return inputTxt(2);
 }
 
 void printTickets(int sum, int *position, int(*orderlist)[6]) { // 그동안 발권한 부분 출력 
-	printf("티켓 발권을 종료합니다. 감사합니다.\n\n");
+	printf("  티켓 발권을 종료합니다. 감사합니다.\n\n");
 	printf("===========================롯데월드===========================\n");
 	for(int idx = 0; idx < *position; idx++) {
 		int typeAll = orderlist[idx][0];
@@ -172,8 +172,8 @@ void printTickets(int sum, int *position, int(*orderlist)[6]) { // 그동안 발권한
 			printf("우대적용\n");
 		}
 	}
-	printf("\n입장료 총액은 %d원 입니다.\n", sum);
-	printf("** 임산부와 다둥이행복카드를 제외한 우대사항은 동반 1인까지 우대가 적용됩니다.\n");
+	printf("\n\t입장료 총액은 %d원 입니다.\n", sum);
+	printf(" ** 임산부와 다둥이행복카드를 제외한 우대사항은 동반 1인까지 우대가 적용됩니다.\n");
 	printf("==============================================================\n\n"); 
 }
 
@@ -196,7 +196,7 @@ int main() {
 			inputData(&typeAll, &typeDay, &residentNum, &count, &forsales); // 데이터 입력
 			
 			// 계산 
-			int sum = ticketCal(typeAll, typeDay, &age, forsales, count, &saleprice); // 동일권 가격합
+			int sum = ticketCal(typeAll, typeDay, residentNum, &age, forsales, count, &saleprice); // 동일권 가격합
 			saveOrder(typeAll, typeDay, age, count, saleprice, forsales, &position, orderList);
 			totalSum += sum;
 			int check = printRepeat(sum);
@@ -204,7 +204,7 @@ int main() {
 		}
 		printTickets(totalSum, &position, orderList);
 		
-		printf("계속 진행(1: 새로운 주문, 2: 프로그램 종료) : ");
+		printf("  계속 진행(1: 새로운 주문, 2: 프로그램 종료) : \n");
 		isExit = inputTxt(2);
 		position = 0;
 		totalSum = 0;
