@@ -93,8 +93,10 @@ int ticketCal(int typeAll, int typeDay, int *age, int type, int count, int *sale
 	else if(age < MIN_ADULT && age > MAX_CHILD) price = TEEN[idx];
 	else if(age < MIN_TEEN && age >= MIN_CHILD) price = CHILD[idx];
 
-	price *= percent[type]; // 각 할인이 적용된 가격
-	*saleprice = (price / 100) * 100; // 롯데월드 할인가는 100의 자리에서 버림한 값
+	if(typeAll == 1 || type > 2) {
+		price *= percent[type]; // 각 할인이 적용된 가격
+		*saleprice = (price / 100) * 100; // 롯데월드 할인가는 100의 자리에서 버림한 값
+	}
 	
 	int sum = 0;
 	if((type > 1 && type < 5) && count > 1) { // 임산부 & 다둥이는 본인만 그 외는 동반 1인 할인 
