@@ -93,16 +93,14 @@ int ticketCal(int typeAll, int typeDay, int residentNum, int *age, int type, int
 	else if(typeAll == 2) idx = typeDay + 1;
 	
 	*age = yearCal(residentNum); // 만나이 계산
-	if(*age < MIN_CHILD  && *age > MIN_BABY) price = BABY;
-	else if(*age > MAX_TEEN) price = CHILD[idx]; // 65세 이상 = 어린이요금 
-	else if(*age > MIN_ADULT) price = ADULT[idx];
+	if(*age < MIN_CHILD  && *age >= MIN_BABY) price = BABY;
+	else if(*age > MAX_ADULT) price = CHILD[idx]; // 65세 이상 = 어린이요금 
+	else if(*age > MAX_TEEN) price = ADULT[idx];
 	else if(*age < MIN_ADULT && *age > MAX_CHILD) price = TEEN[idx];
 	else if(*age < MIN_TEEN && *age >= MIN_CHILD) price = CHILD[idx];
 
-	if(typeAll == 1 || type > 2) { // 장애인, 국가유공자만 파크이용권또한 할인가능 
-		price *= percent[type]; // 각 할인이 적용된 가격
-		*saleprice = (price / 100) * 100; // 롯데월드 할인가는 100의 자리에서 버림한 값
-	}
+	price *= percent[type]; // 각 할인이 적용된 가격
+	*saleprice = (price / 100) * 100; // 롯데월드 할인가는 100의 자리에서 버림한 값
 	
 	int sum = 0;
 	if((type > 1 && type < 5) && count > 1) { // 임산부 & 다둥이는 본인만 그 외는 동반 1인 할인 
@@ -181,7 +179,7 @@ void printTickets(int sum, int *position, int(*orderlist)[6]) { // 그동안 발권한
 }
 
 void orderFilePrint(int totalSum, int *position, int(*orderList)[6]) { // 파일에 저장 
-	FILE *fp = fopen("report.csv", "a");
+	FILE *fp = fopen("report.csv", "a"); // 이어쓰기
 	for(int idx = 0; idx < *position; idx++) {
 		fprintf(fp, "%d,", today); // 날짜 저장 
 		int typeAll = orderList[idx][0];
