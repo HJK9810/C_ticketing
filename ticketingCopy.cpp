@@ -189,21 +189,21 @@ void orderFilePrint(int totalSum, int *position, int(*orderList)[6]) { // 파일에
 		int price = orderList[idx][4] / 100 * 100;
 		int sales = orderList[idx][5];
 		// 이용권 
-		if(typeAll == 1) fprintf(fp, "%12s,", "종합이용권");
-		else if(typeAll == 2) fprintf(fp, "%12s,", "파크이용권");
+		if(typeAll == 1) fprintf(fp, "%-12s,", "종합이용권");
+		else if(typeAll == 2) fprintf(fp, "%-12s,", "파크이용권");
 		// 권종 
-		if(typeDay == 1) fprintf(fp, "%6s,", "종일권");
-		else if(typeDay == 2) fprintf(fp, "%6s,", "오후권");
+		if(typeDay == 1) fprintf(fp, "%-6s,", "종일권");
+		else if(typeDay == 2) fprintf(fp, "%-6s,", "오후권");
 		// 연령 
 		if(age > MAX_ADULT){
-			fprintf(fp, "%6s,", "노인");
+			fprintf(fp, "%-6s,", "노인");
 		} else if(age > MAX_TEEN) { // 어른 
-			fprintf(fp, "%6s,", "어른");
+			fprintf(fp, "%-6s,", "어른");
 		} else if(age < MIN_ADULT && age > MAX_CHILD) { // 청소년
-			fprintf(fp, "%6s,", "청소년"); 
+			fprintf(fp, "%-6s,", "청소년"); 
 		} else if(age < MIN_TEEN && age >= MIN_CHILD) { // 어린이 
-			fprintf(fp, "%6s,", "어린이");
-		} else fprintf(fp, "%6s,", "베이비");
+			fprintf(fp, "%-6s,", "어린이");
+		} else fprintf(fp, "%-6s,", "베이비");
 		// 수량 & 가격 
 		fprintf(fp, "%d,%d,", count, price);
 		// 우대사항 
