@@ -91,7 +91,7 @@ int ticketCal(int typeAll, int typeDay, int residentNum, int *age, int type, int
 	
 	*age = yearCal(residentNum); // 만나이 계산
 	if(*age < MIN_CHILD  && *age >= MIN_BABY) price = BABY;
-	else if(*age > MIN_ADULT) price = CHILD[idx]; // 65세 이상 = 어린이요금 
+	else if(*age > MAX_ADULT) price = CHILD[idx]; // 65세 이상 = 어린이요금 
 	else if(*age > MAX_TEEN) price = ADULT[idx];
 	else if(*age < MIN_ADULT && *age > MAX_CHILD) price = TEEN[idx];
 	else if(*age < MIN_TEEN && *age >= MIN_CHILD) price = CHILD[idx];
