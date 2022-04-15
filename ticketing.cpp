@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <time.h> // 오늘날짜 구하는 헤더
+// 상수 
 const int MIN_BABY = 1, MIN_CHILD = 3, MIN_TEEN = 13, MIN_ADULT = 19, MAX_CHILD = 12, MAX_TEEN = 18, MAX_ADULT = 64;
+// 없음, 장애, 유공자, 휴가장병, 임산부, 다둥이 
+const int NONE = 1, DISABLE = 2, MERIT = 3, VACSOLD = 4, PREGNANT = 5, MULTICHILD = 6;
+const int BABY = 1, CHILD = 2, TEEN = 3, ADULT = 4, OLD = 5;
 
 void printError() { // error출력 
 	printf("잘못된값이 입력됬습니다. 다시 입력하세요.\n");
@@ -79,10 +83,10 @@ int yearCal(int yourAge) { // 주민번호에 따른 나이구하기
 
 int ticketCal(int typeAll, int typeDay, int residentNum, int *age, int type, int count, int *saleprice) { // 종합or파크, 종일or오후, 나이
 	const float percent[7] = {0, 1, 0.5, 0.5, 0.51, 0.5, 0.7}; // 각각의 할인률 
-	const int ADULT[4] = {62000, 50000, 59000, 47000}; // 종합-종일, 종합-오후, 파크-종일, 파크-오후 
-	const int TEEN[4] = {54000, 43000, 52000, 41000};
-	const int CHILD[4] = {47000, 36000, 46000, 35000};
-	const int BABY = 15000; 
+	const int ADULT_FEE[4] = {62000, 50000, 59000, 47000}; // 종합-종일, 종합-오후, 파크-종일, 파크-오후 
+	const int TEEN_FEE[4] = {54000, 43000, 52000, 41000};
+	const int CHILD_FEE[4] = {47000, 36000, 46000, 35000};
+	const int BABY_FEE = 15000; 
 	int price = 0;
 	int idx = 0;
 	
@@ -90,11 +94,22 @@ int ticketCal(int typeAll, int typeDay, int residentNum, int *age, int type, int
 	else if(typeAll == 2) idx = typeDay + 1;
 	
 	*age = yearCal(residentNum); // 만나이 계산
-	if(*age < MIN_CHILD  && *age >= MIN_BABY) price = BABY;
-	else if(*age > MAX_ADULT) price = CHILD[idx]; // 65세 이상 = 어린이요금 
-	else if(*age > MAX_TEEN) price = ADULT[idx];
-	else if(*age < MIN_ADULT && *age > MAX_CHILD) price = TEEN[idx];
-	else if(*age < MIN_TEEN && *age >= MIN_CHILD) price = CHILD[idx];
+	if(*age < MIN_CHILD  && *age >= MIN_BABY) {
+		price = BABY_FEE;
+		*age = BABY;
+	} else if(*age > MAX_ADULT) {
+		price = CHILD_FEE[idx]; // 65세 이상 = 어린이요금
+		*age = OLD;
+	} else if(*age > MAX_TEEN) {
+		price = ADULT_FEE[idx];	
+		*age = ADULT;
+	} else if(*age < MIN_ADULT && *age > MAX_CHILD) {
+		price = TEEN_FEE[idx];
+		*age = TEEN;
+	} else if(*age < MIN_TEEN && *age >= MIN_CHILD) {
+		price = CHILD_FEE[idx];
+		*age = CHILD;
+	}
 
 	price *= percent[type]; // 각 할인이 적용된 가격
 	*saleprice = (price / 100) * 100; // 롯데월드 할인가는 100의 자리에서 버림한 값
@@ -147,25 +162,25 @@ void printTickets(int sum, int *position, int(*orderlist)[6]) { // 그동안 발권한
 		if(typeDay == 1) printf("%6s ", "종일권");
 		else if(typeDay == 2) printf("%6s ", "오후권");
 		
-		if(age > MAX_ADULT){
+		if(age == OLD){
 			printf("%6s ", "노인");
-		} else if(age > MAX_TEEN) { // 어른 
+		} else if(age == ADULT) { // 어른 
 			printf("%6s ", "어른");
-		} else if(age < MIN_ADULT && age > MAX_CHILD) { // 청소년
+		} else if(age == TEEN) { // 청소년
 			printf("%6s ", "청소년"); 
-		} else if(age < MIN_TEEN && age >= MIN_CHILD) { // 어린이 
+		} else if(age == CHILD) { // 어린이 
 			printf("%6s ", "어린이");
 		} else printf("%6s ", "베이비");
 		
 		printf("X%-6d %-10d    ", count, price);
 		
-		if(sales == 1) printf("*우대적용 없음\n");
+		if(sales == NONE) printf("*우대적용 없음\n");
 		else{
-			if(sales == 2) printf("*장애인 ");
-			else if(sales == 3) printf("*국가유공자 ");
-			else if(sales == 4) printf("*휴가장병 ");
-			else if(sales == 5) printf("*임산부 ");
-			else if(sales == 6) printf("*다둥이 ");
+			if(sales == DISABLE) printf("*장애인 ");
+			else if(sales == MERIT) printf("*국가유공자 ");
+			else if(sales == VACSOLD) printf("*휴가장병 ");
+			else if(sales == PREGNANT) printf("*임산부 ");
+			else if(sales == MULTICHILD) printf("*다둥이 ");
 			
 			printf("우대적용\n");
 		}
