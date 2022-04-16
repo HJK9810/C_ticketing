@@ -17,8 +17,8 @@ int transTypeAll(char *typeAll) {
 int transTypeDay(char *typeDay) {
 	int ticketDay = 0;
 	// 권종 체크 
-	if(strcmp(typeDay, "종일권") == 0) ticketDay = 1;
-	else if(strcmp(typeDay, "오후권") == 0) ticketDay = 2;
+	if(strcmp(typeDay, "1DAY  ") == 0) ticketDay = 1;
+	else if(strcmp(typeDay, "After4") == 0) ticketDay = 2;
 	return ticketDay;
 }
 int trasAge(char *ageCount) {

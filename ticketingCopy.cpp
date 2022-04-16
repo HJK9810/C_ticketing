@@ -39,7 +39,7 @@ void inputData(int *typeAll, int *typeDay, int *residentNum, int *count, int *fo
 	*typeAll = inputTxt(2);
 		
 	printf("  권종을 선택하세요.\n");
-	printf("\t1. 종일권\n\t2. 오후권\n");
+	printf("\t1. 1DAY\n\t2. After4(오후 4시 이후 입장)\n");
 	*typeDay = inputTxt(2);
 		
 	printf("  주민번호를 입력하세요.(6자리까지)\n");
@@ -161,8 +161,8 @@ void printTickets(int sum, int *position, int(*orderlist)[6]) { // 그동안 발권한
 		if(typeAll == 1) printf("%12s ", "종합이용권");
 		else if(typeAll == 2) printf("%12s ", "파크이용권");
 		
-		if(typeDay == 1) printf("%6s ", "종일권");
-		else if(typeDay == 2) printf("%6s ", "오후권");
+		if(typeDay == 1) printf("%6s ", "1DAY");
+		else if(typeDay == 2) printf("%6s ", "After4");
 		
 		if(age == OLD){
 			printf("%6s ", "노인");
@@ -206,8 +206,8 @@ void orderFilePrint(int totalSum, int *position, int(*orderList)[6]) { // 파일에
 		if(typeAll == 1) fprintf(fp, "%-12s,", "종합이용권");
 		else if(typeAll == 2) fprintf(fp, "%-12s,", "파크이용권");
 		// 권종 
-		if(typeDay == 1) fprintf(fp, "%-6s,", "종일권");
-		else if(typeDay == 2) fprintf(fp, "%-6s,", "오후권");
+		if(typeDay == 1) fprintf(fp, "%-6s,", "1DAY");
+		else if(typeDay == 2) fprintf(fp, "%-6s,", "After4");
 		// 연령 
 		if(age == OLD){
 			fprintf(fp, "%-6s,", "노인");
