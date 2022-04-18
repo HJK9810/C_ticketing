@@ -235,11 +235,11 @@ void orderFilePrint(int totalSum, int *position, int(*orderList)[6]) { // 파일에
 
 int main() {
 	int isExit = 0; // 해당 주문 종료 
-	int position = 0; // 주문 배열 탐색용
-	int totalSum = 0;  // 모든 티켓 합 
 	int orderList[100][6] = {0}; // 주문내역 저장 
 	
 	do {
+		int totalSum = 0;  // 모든 티켓 합 
+		int position = 0; // 주문 배열 탐색용
 		while(true) {
 			int typeAll = 0; // 종합 or 파크 
 			int typeDay = 0; // 종일 or 오후 
@@ -263,8 +263,6 @@ int main() {
 		
 		printf("  계속 진행(1: 새로운 주문, 2: 프로그램 종료) : \n");
 		isExit = inputTxt(2);
-		position = 0;
-		totalSum = 0;
 	} while (isExit == 1);
 
 	return 0;
